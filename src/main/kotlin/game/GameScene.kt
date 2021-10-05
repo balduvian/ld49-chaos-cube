@@ -52,7 +52,7 @@ class GameScene(window: Window) : Scene(window) {
 		player.update(input, timing, board, controllable)
 
 		val healthChange = board.update(input, timing, player, controllable)
-		//health += healthChange
+		health += healthChange
 
 		if (health > MAX_HEALTH) {
 			health = MAX_HEALTH
@@ -132,45 +132,45 @@ class GameScene(window: Window) : Scene(window) {
 
 		board.render(camera, lightAngle, globalTimer)
 
-		//player.render(camera, lightAngle)
+		player.render(camera, lightAngle)
 
-		//board.renderGoals(camera)
+		board.renderGoals(camera)
 
 		/* render HUD */
 		glDisable(GL_DEPTH_TEST)
-//
-		//val starX = 80f
-		//val starY = 12.5f
-		//val starSize = 10f
-//
-		//for (i in 0 until 5) {
-		//	GameResources.starShader.get().enable(hudCamera.projection, Camera.transform(starX, starY, starSize + 2.5f, starSize + 2.5f, i * (2.0 * PI / 5.0).toFloat()))
-		//	GameResources.starShader.get().uniformVector3(0, 0.1f, 0.1f, 0.1f)
-		//	GameResources.starPiece.get().render()
-		//}
-//
-		//for (i in 0 until 5) {
-		//	GameResources.starShader.get().enable(hudCamera.projection, Camera.transform(starX, starY, starSize, starSize, i * (2.0 * PI / 5.0).toFloat()))
-		//	GameResources.starShader.get().uniformVector3(0, 0.3f, 0.3f, 0.3f)
-		//	GameResources.starPiece.get().render()
-		//}
-//
-		//for (i in 0 until health) {
-		//	GameResources.starShader.get().enable(hudCamera.projection, Camera.transform(starX, starY, starSize, starSize, i * (2.0 * PI / 5.0).toFloat()))
-		//	GameResources.starShader.get().uniformVector3(0, 1.0f, 0.9f, 0.0f)
-		//	GameResources.starPiece.get().render()
-		//}
-//
-		//board.renderTimer(hudCamera)
 
-		//if (!controllable) {
-			Font.renderString("chaos", hudCamera, GameResources.fontTiles.get(), 70f, 55.0f, 0.5f, 10f, Vector4f(1f, 1f, 1f, 1f), true, true, globalTimer)
-			Font.renderString("cube", hudCamera, GameResources.fontTiles.get(),  90f, 40.0f, 0.5f, 10f, Vector4f(1f, 1f, 1f, 1f), true)
+		val starX = 80f
+		val starY = 12.5f
+		val starSize = 10f
+
+		for (i in 0 until 5) {
+			GameResources.starShader.get().enable(hudCamera.projection, Camera.transform(starX, starY, starSize + 2.5f, starSize + 2.5f, i * (2.0 * PI / 5.0).toFloat()))
+			GameResources.starShader.get().uniformVector3(0, 0.1f, 0.1f, 0.1f)
+			GameResources.starPiece.get().render()
+		}
+
+		for (i in 0 until 5) {
+			GameResources.starShader.get().enable(hudCamera.projection, Camera.transform(starX, starY, starSize, starSize, i * (2.0 * PI / 5.0).toFloat()))
+			GameResources.starShader.get().uniformVector3(0, 0.3f, 0.3f, 0.3f)
+			GameResources.starPiece.get().render()
+		}
+
+		for (i in 0 until health) {
+			GameResources.starShader.get().enable(hudCamera.projection, Camera.transform(starX, starY, starSize, starSize, i * (2.0 * PI / 5.0).toFloat()))
+			GameResources.starShader.get().uniformVector3(0, 1.0f, 0.9f, 0.0f)
+			GameResources.starPiece.get().render()
+		}
+
+		board.renderTimer(hudCamera)
+
+		if (!controllable) {
+			Font.renderString("chaos", hudCamera, GameResources.fontTiles.get(), 70f, 75.0f, 0.5f, 10f, Vector4f(1f, 1f, 1f, deathTimer.along()), true, true, globalTimer)
+			Font.renderString("cube", hudCamera, GameResources.fontTiles.get(),  90f, 60.0f, 0.5f, 10f, Vector4f(1f, 1f, 1f, deathTimer.along()), true)
 
 			val fontYOffset = sin(globalTimer).toFloat() * 2.5f
 
-			//Font.renderString("press wasd to start", hudCamera, GameResources.fontTiles.get(), 80f, 42.5f + fontYOffset, 0.5f, 5f, Vector4f(1f, 1f, 1f, 1f), true)
-		//}
+			Font.renderString("press wasd to start", hudCamera, GameResources.fontTiles.get(), 80f, 42.5f + fontYOffset, 0.5f, 5f, Vector4f(1f, 1f, 1f, deathTimer.along()), true)
+		}
 	}
 
 	override fun onResize(width: Int, height: Int) {

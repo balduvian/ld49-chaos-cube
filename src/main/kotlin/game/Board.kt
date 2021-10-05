@@ -111,7 +111,7 @@ class Board(val width: Int, val height: Int) {
 				if (xzToIndex(player.x, player.z) == i) {
 					lifeChange -= 1
 				} else {
-//					crates[i] = crate
+					crates[i] = crate
 				}
 			}
 		}
@@ -199,7 +199,7 @@ class Board(val width: Int, val height: Int) {
 			3 -> Stage(150.0, 1.75, 14.0, 0.40f, true, Color(0xce1483), Color(0x9e1946), Color(0xde0d92))
 			4 -> Stage(180.0, 1.50, 12.0, 0.45f, true, Color(0xf7d002), Color(0xd7af70), Color(0xfea82f))
 			5 -> Stage(210.0, 1.25, 10.0, 0.50f, true, Color(0x423e3b), Color(0xaea4bf), Color(0x393e41))
-			else -> Stage(240.0, 0.01, 08.0, 0.55f, true, Color(Random.nextInt(0x1000000)), Color(Random.nextInt(0x1000000)), Color(Random.nextInt(0x1000000)))
+			else -> Stage(240.0, 1.00, 08.0, 0.55f, true, Color(Random.nextInt(0x1000000)), Color(Random.nextInt(0x1000000)), Color(Random.nextInt(0x1000000)))
 		}
 	}
 
@@ -331,44 +331,44 @@ class Board(val width: Int, val height: Int) {
 		/* render floor */
 		val random = Random(32432)
 
-		//for (i in 0 until width) {
-		//	for (j in 0 until height) {
-		//		val lightness = Util.interp(0.75f, 1.0f, random.nextFloat())
-		//		val index = xzToIndex(i, j)
-//
-		//		if (level[index] != 0) {
-		//			/* grid face */
-		//			GameResources.stage3DShader.get().enable(camera.projView, Camera3D.transform(i.toFloat(), 0f, j.toFloat(), 1f, 1f, 1f))
-//
-		//			val goal = goals[index]
-		//			if (goal != null) {
-		//				val color = Util.colors[goal.type]
-		//				GameResources.stage3DShader.get().uniformVector3(0, color.first, color.second, color.third)
-		//			} else {
-		//				GameResources.stage3DShader.get().uniformVector3(0, lightness, lightness, lightness)
-		//			}
-//
-		//			GameResources.stage3DShader.get().uniformVector3(1, 0.25f, 0.25f, 0.25f)
-		//			GameResources.stage3DShader.get().uniformVector3(2, lightAngle.x, lightAngle.y, lightAngle.z)
-//
-		//			val impendingCrate = impending[index]
-		//			if (impendingCrate == null) {
-		//				GameResources.stage3DShader.get().uniformFloat(3, 0f)
-		//			} else {
-		//				GameResources.stage3DShader.get().uniformFloat(3, impendingCrate.timer.along())
-		//			}
-//
-		//			GameResources.plane.get().render()
-//
-		//			/* walls */
-		//			GameResources.color3DShader.get().enable(camera.projView, Camera3D.transform(i.toFloat(), -3f, j.toFloat(), 1f, 3f, 1f))
-		//			GameResources.color3DShader.get().uniformVector3(0, 0.75f, 0.75f, 0.75f)
-		//			GameResources.color3DShader.get().uniformVector3(1, 0.25f, 0.25f, 0.25f)
-		//			GameResources.color3DShader.get().uniformVector3(2, lightAngle.x, lightAngle.y, lightAngle.z)
-		//			GameResources.sleeve.get().render()
-		//		}
-		//	}
-		//}
+		for (i in 0 until width) {
+			for (j in 0 until height) {
+				val lightness = Util.interp(0.75f, 1.0f, random.nextFloat())
+				val index = xzToIndex(i, j)
+
+				if (level[index] != 0) {
+					/* grid face */
+					GameResources.stage3DShader.get().enable(camera.projView, Camera3D.transform(i.toFloat(), 0f, j.toFloat(), 1f, 1f, 1f))
+
+					val goal = goals[index]
+					if (goal != null) {
+						val color = Util.colors[goal.type]
+						GameResources.stage3DShader.get().uniformVector3(0, color.first, color.second, color.third)
+					} else {
+						GameResources.stage3DShader.get().uniformVector3(0, lightness, lightness, lightness)
+					}
+
+					GameResources.stage3DShader.get().uniformVector3(1, 0.25f, 0.25f, 0.25f)
+					GameResources.stage3DShader.get().uniformVector3(2, lightAngle.x, lightAngle.y, lightAngle.z)
+
+					val impendingCrate = impending[index]
+					if (impendingCrate == null) {
+						GameResources.stage3DShader.get().uniformFloat(3, 0f)
+					} else {
+						GameResources.stage3DShader.get().uniformFloat(3, impendingCrate.timer.along())
+					}
+
+					GameResources.plane.get().render()
+
+					/* walls */
+					GameResources.color3DShader.get().enable(camera.projView, Camera3D.transform(i.toFloat(), -3f, j.toFloat(), 1f, 3f, 1f))
+					GameResources.color3DShader.get().uniformVector3(0, 0.75f, 0.75f, 0.75f)
+					GameResources.color3DShader.get().uniformVector3(1, 0.25f, 0.25f, 0.25f)
+					GameResources.color3DShader.get().uniformVector3(2, lightAngle.x, lightAngle.y, lightAngle.z)
+					GameResources.sleeve.get().render()
+				}
+			}
+		}
 
 		/* render crates */
 		iter(impending) { crate, x, z, _ ->

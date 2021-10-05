@@ -27,18 +27,14 @@ sourceSets {
 }
 
 dependencies {
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.5.21'
-
     implementation "org.lwjgl:lwjgl:${lwjglVersion}"
     implementation "org.lwjgl:lwjgl-opengl:${lwjglVersion}"
     implementation "org.lwjgl:lwjgl-glfw:${lwjglVersion}"
-    implementation "org.lwjgl:lwjgl-stb:${lwjglVersion}"
     implementation "org.lwjgl:lwjgl-openal:${lwjglVersion}"
 
     implementation "org.lwjgl:lwjgl:${lwjglVersion}:natives-windows"
     implementation "org.lwjgl:lwjgl-opengl:${lwjglVersion}:natives-windows"
     implementation "org.lwjgl:lwjgl-glfw:${lwjglVersion}:natives-windows"
-    implementation "org.lwjgl:lwjgl-stb:${lwjglVersion}:natives-windows"
     implementation "org.lwjgl:lwjgl-openal:${lwjglVersion}:natives-windows"
 
     implementation "org.joml:joml:${jomlVersion}"
