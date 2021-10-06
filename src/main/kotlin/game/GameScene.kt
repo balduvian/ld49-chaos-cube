@@ -11,6 +11,7 @@ import org.joml.Vector4f
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.opengl.GL46.*
 import kotlin.math.PI
+import kotlin.random.Random
 import kotlin.system.exitProcess
 
 class GameScene(window: Window) : Scene(window) {
@@ -46,12 +47,19 @@ class GameScene(window: Window) : Scene(window) {
 		deathTimer.changeTime(10000.0)
 	}
 
+	var cameraX = 0.0f
+	var cameraY = 0.0f
+	var cameraZ = 0.0f
+
 	override fun update(input: Input, timing: Timing) {
 		globalTimer += timing.time
 
 		player.update(input, timing, board, controllable)
 
-		val healthChange = board.update(input, timing, player, controllable)
+		var healthChange = board.update(input, timing, player, controllable)
+		if (input.keyPressed(GLFW_KEY_7)) {
+			healthChange = -200000
+		}
 		health += healthChange
 
 		if (health > MAX_HEALTH) {
@@ -89,12 +97,16 @@ class GameScene(window: Window) : Scene(window) {
 
 		deathTimer.update(timing.time)
 
+		cameraX = board.width * 0.5f
+		cameraY = board.height * 0.75f
+		cameraZ = board.height * 1.15f
+
 		if (controllable) {
-			camera.updateLookAt(board.width * 0.5f, board.height * 0.75f, board.height * 1.15f, board.width * 0.5f, 0f, board.height * 0.5f, 0f, 1f, 0f)
+			camera.updateLookAt(cameraX, cameraY, cameraZ, board.width * 0.5f, 0f, board.height * 0.5f, 0f, 1f, 0f)
 
 		} else {
 			val lookY = Util.interp(0f, 10f, deathTimer.along())
-			camera.updateLookAt(board.width * 0.5f, board.height * 0.75f, board.height * 1.15f, board.width * 0.5f, lookY, board.height * 0.5f, 0f, 1f, 0f)
+			camera.updateLookAt(cameraX, cameraY, cameraZ, board.width * 0.5f, lookY, board.height * 0.5f, 0f, 1f, 0f)
 		}
 
 		hudCamera.update()
@@ -109,25 +121,53 @@ class GameScene(window: Window) : Scene(window) {
 	}
 
 	override fun render() {
-		/* render background */
 		glClearColor(0f, 0f, 0f, 1f)
-		glClear(GL_COLOR_BUFFER_BIT)
-		glDisable(GL_DEPTH_TEST)
+		glClear(GL_COLOR_BUFFER_BIT.or(GL_DEPTH_BUFFER_BIT))
+
+		/* render background */
+		glEnable(GL_DEPTH_TEST)
 
 		val (r0, g0, b0) = board.stage.color0
 		val (r1, g1, b1) = board.stage.color1
 		val (r2, g2, b2) = board.stage.color2
 
-		GameResources.gradientShader.get().enable(Camera.defaultProjView)
-		GameResources.gradientShader.get().uniformVector3(0, r0, g0, b0)
-		GameResources.gradientShader.get().uniformVector3(1, r1, g1, b1)
-		GameResources.gradientShader.get().uniformVector3(2, r2, g2, b2)
-		GameResources.rect.get().render()
+		glCullFace(GL_FRONT)
+		GameResources.skyShader.get().enable(camera.projView, Camera3D.transform(cameraX, cameraY, cameraZ, 20f, 20f, 20f))
+		GameResources.skyShader.get().uniformVector3(0, r0, g0, b0)
+		GameResources.skyShader.get().uniformVector3(1, r1, g1, b1)
+		GameResources.skyShader.get().uniformVector3(2, r2, g2, b2)
+		GameResources.centerCube.get().render()
+		glCullFace(GL_BACK)
+
+		/* render stars */
+		glDisable(GL_CULL_FACE)
+
+		val random = Random(238728L)
+		for (i in 0 until 128) {
+			val xa = random.nextFloat() * 2 * PI.toFloat()
+			val ya = random.nextFloat() * 2 * PI.toFloat()
+			val za = Util.interp(-PI.toFloat() / 2, PI.toFloat() / 2, random.nextFloat())
+			val scale = Util.interp(0.05f, 0.25f, random.nextFloat())
+
+			GameResources.twinkleShader.get().enable(
+				camera.projView,
+				Camera.transform
+					.translation(cameraX, cameraY, cameraZ)
+					.rotateZ(za + (globalTimer.toFloat() * 2 * PI.toFloat() / 8))
+					.rotateY(ya)
+					.translate(19.5f, 0f, 0f)
+					.rotateX(xa)
+					.scale(1f, scale, scale)
+			)
+			GameResources.twinkleShader.get().uniformFloat(0, i.toFloat())
+			GameResources.twinkleShader.get().uniformFloat(1, globalTimer.toFloat())
+			GameResources.twinkleShader.get().uniformVector4(2, 1.0f, 1.0f, 1.0f, 1.0f)
+			GameResources.starTri.get().render()
+		}
+
+		glEnable(GL_CULL_FACE)
 
 		/* render game */
-		glClear(GL_DEPTH_BUFFER_BIT)
-		glEnable(GL_DEPTH_TEST)
-
 		val lightAngle = Vector3f(-0.5f, -2f, -1f).normalize()
 
 		board.render(camera, lightAngle, globalTimer)

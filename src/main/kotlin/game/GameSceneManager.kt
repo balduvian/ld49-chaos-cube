@@ -28,6 +28,11 @@ class GameSceneManager : SceneManager(SCENE_GAME) {
 			GameResources.tileShinyShader,
 			GameResources.textureShader,
 			GameResources.fontTiles,
+			GameResources.skyShader,
+			GameResources.sphere,
+			GameResources.centerCube,
+			GameResources.twinkleShader,
+			GameResources.starTri,
 		)
 	}
 

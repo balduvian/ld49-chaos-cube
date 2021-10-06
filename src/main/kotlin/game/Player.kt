@@ -6,6 +6,7 @@ import com.balduvian.cnge.graphics.Input
 import com.balduvian.cnge.graphics.Timing
 import org.joml.Vector3f
 import org.lwjgl.glfw.GLFW.*
+import org.lwjgl.opengl.GL11.*
 import kotlin.math.pow
 
 class Player(var x: Int, var z: Int) {

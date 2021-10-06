@@ -82,6 +82,20 @@ object GameResources {
 		"tile",
 		"time",
 	)
+	val skyShader = ShaderResource(
+		"/shaders/sky/vert.glsl",
+		"/shaders/sky/frag.glsl",
+		"color0",
+		"color1",
+		"color2",
+	)
+	val twinkleShader = ShaderResource(
+		"/shaders/twinkle/vert.glsl",
+		"/shaders/twinkle/frag.glsl",
+		"index",
+		"time",
+		"color",
+	)
 	val rect = VAOResource(
 		GL_TRIANGLES,
 		intArrayOf(0, 1, 2, 2, 3, 0),
@@ -176,6 +190,33 @@ object GameResources {
 				0f, 1f, 0f, /**/ 0f, 1f, 0f, /**/ 0f, 1f, 0f, /**/ 0f, 1f, 0f,
 				/* down */
 				0f,-1f, 0f, /**/ 0f,-1f, 0f, /**/ 0f,-1f, 0f, /**/ 0f,-1f, 0f,
+			)),
+		)
+	)
+	val centerCube = VAOResource(
+		GL_TRIANGLES,
+		intArrayOf(
+			0,  1,  2,  2,  3,  0,
+			4,  5,  6,  6,  7,  4,
+			8,  9, 10, 10, 11,  8,
+			12, 13, 14, 14, 15, 12,
+			16, 17, 18, 18, 19, 16,
+			20, 21, 22, 22, 23, 20,
+		),
+		arrayOf(
+			VAO.StaticAttribute(3, floatArrayOf(
+				/* front */
+				-1f, -1f, 1f, /**/ 1f, -1f, 1f, /**/ 1f, 1f, 1f, /**/ -1f, 1f, 1f,
+				/* right */
+				1f, -1f, 1f, /**/ 1f, -1f, -1f, /**/ 1f, 1f, -1f, /**/ 1f, 1f, 1f,
+				/* back */
+				1f, -1f, -1f, /**/ -1f, -1f, -1f, /**/ -1f, 1f, -1f, /**/ 1f, 1f, -1f,
+				/* left */
+				-1f, -1f, -1f, /**/ -1f, -1f, 1f, /**/ -1f, 1f, 1f, /**/ -1f, 1f, -1f,
+				/* up */
+				-1f, 1f, 1f, /**/ 1f, 1f, 1f, /**/ 1f, 1f, -1f, /**/ -1f, 1f, -1f,
+				/* down */
+				-1f, -1f, -1f, /**/ 1f, -1f, -1f, /**/ 1f, -1f, 1f, /**/ -1f, -1f, 1f,
 			)),
 		)
 	)
@@ -277,10 +318,20 @@ object GameResources {
 			)
 		)
 	}
+	val sphere = Sphere.createSphere(32)
 	val dynTri = VAOResource(
 		GL_TRIANGLES,
 		intArrayOf(0, 1, 2),
 		arrayOf(VAO.DynamicAttribute(2, 3))
+	)
+	val starTri = VAOResource(
+		GL_TRIANGLES,
+		intArrayOf(0, 1, 2),
+		arrayOf(VAO.StaticAttribute(3, floatArrayOf(
+			0f, cos(0f), sin(0f),
+			0f, cos(2 * PI.toFloat() / 3), sin(2 * PI.toFloat() / 3),
+			0f, cos(4 * PI.toFloat() / 3), sin(4 * PI.toFloat() / 3)
+		)))
 	)
 	val fontTiles = TileTextureResource(
 		"/textures/font.png",

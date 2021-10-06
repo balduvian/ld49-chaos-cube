@@ -50,17 +50,18 @@ class Crate(val type: Int) {
 			GameResources.shinyShader.get().enable(camera.projView, model)
 			GameResources.shinyShader.get().uniformVector3(0, lightAngle.x, lightAngle.y, lightAngle.z)
 			GameResources.shinyShader.get().uniformFloat(1, (time + id).toFloat())
+			GameResources.cube.get().render()
 
 		} else {
-			val color = Util.colors[type]
-			val shadowColor = Util.shadowColors[type]
+			val (r0, g0, b0) = Util.crateColors[type][0]
+			val (r1, g1, b1) = Util.crateColors[type][1]
+			val (r2, g2, b2) = Util.crateColors[type][2]
 
-			GameResources.color3DShader.get().enable(camera.projView,  model)
-			GameResources.color3DShader.get().uniformVector3(0, color.first, color.second, color.third)
-			GameResources.color3DShader.get().uniformVector3(1, shadowColor.first, shadowColor.second, shadowColor.third)
-			GameResources.color3DShader.get().uniformVector3(2, lightAngle.x, lightAngle.y, lightAngle.z)
+			GameResources.skyShader.get().enable(camera.projView, Camera3D.transform(x + 0.5f, y + offY + 0.45f, z + 0.5f, 0.45f, 0.45f, 0.45f))
+			GameResources.skyShader.get().uniformVector3(0, r0, g0, b0)
+			GameResources.skyShader.get().uniformVector3(1, r1, g1, b1)
+			GameResources.skyShader.get().uniformVector3(2, r2, g2, b2)
+			GameResources.centerCube.get().render()
 		}
-
-		GameResources.cube.get().render()
 	}
 }
