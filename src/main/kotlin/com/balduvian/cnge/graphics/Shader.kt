@@ -72,7 +72,7 @@ class Shader(
 				if (locations[i] == -1) return Bad("Uniform ${uniforms[i]} was not found")
 			}
 
-			return Good(Shader(program, modelLocation, projViewLocation, normalMatrixLocation, pvmLocation, locations))
+			return Good(Shader(program, projViewLocation, modelLocation, normalMatrixLocation, pvmLocation, locations))
 		}
 
 		private fun createShader(data: String, type: Int): Option<Int> {

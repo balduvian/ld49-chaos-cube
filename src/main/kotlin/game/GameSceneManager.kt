@@ -33,6 +33,10 @@ class GameSceneManager : SceneManager(SCENE_GAME) {
 			GameResources.centerCube,
 			GameResources.twinkleShader,
 			GameResources.starTri,
+			GameResources.smoothColor3DShader,
+			GameResources.roundedCube,
+			GameResources.gridShader,
+			GameResources.gridFuzzyShader,
 		)
 	}
 

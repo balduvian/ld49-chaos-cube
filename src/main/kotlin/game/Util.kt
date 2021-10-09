@@ -35,10 +35,10 @@ object Util {
 	)
 
 	val crateColors = arrayOf(
-		arrayOf(Color(0x4f0505), Color(0x991717), Color(0xde2828)),
-		arrayOf(Color(0x05630b), Color(0x14c932), Color(0x91e3ae)),
-		arrayOf(Color(0x110673), Color(0x3b1cd6), Color(0xbba8f0)),
-		arrayOf(Color(0xcc6516), Color(0xf5cb0f), Color(0xebe4a0)),
+		arrayOf(Color(0x8c002a), Color(0xeb2315), Color(0xde2828)),
+		arrayOf(Color(0x007321), Color(0x51d909), Color(0x91e3ae)),
+		arrayOf(Color(0x21008f), Color(0x0cafeb), Color(0xbba8f0)),
+		arrayOf(Color(0xb34100), Color(0xf2d011), Color(0xebe4a0)),
 
 		arrayOf(Color(0xcc6516), Color(0xf5cb0f), Color(0xebe4a0)),
 		arrayOf(Color(0x010f0d), Color(0x172120), Color(0x333333))

@@ -9,9 +9,7 @@ in vec3 pos;
 out vec4 color;
 
 void main() {
-	vec3 normPos = normalize(pos);
-
-	float along = (normPos.y + 1) / 2;
+	float along = (normalize(pos).y + 1) / 2;
 
 	float secondPart = step(0.5, along);
 	float firstPart = 1 - secondPart;

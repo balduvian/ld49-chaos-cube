@@ -140,10 +140,11 @@ class GameScene(window: Window) : Scene(window) {
 		glCullFace(GL_BACK)
 
 		/* render stars */
-		glDisable(GL_CULL_FACE)
+		glCullFace(GL_FRONT)
+		glDisable(GL_DEPTH_TEST)
 
 		val random = Random(238728L)
-		for (i in 0 until 128) {
+		for (i in 0 until 256) {
 			val xa = random.nextFloat() * 2 * PI.toFloat()
 			val ya = random.nextFloat() * 2 * PI.toFloat()
 			val za = Util.interp(-PI.toFloat() / 2, PI.toFloat() / 2, random.nextFloat())
@@ -153,7 +154,7 @@ class GameScene(window: Window) : Scene(window) {
 				camera.projView,
 				Camera.transform
 					.translation(cameraX, cameraY, cameraZ)
-					.rotateZ(za + (globalTimer.toFloat() * 2 * PI.toFloat() / 8))
+					.rotateZ(za + (globalTimer.toFloat() * 2 * PI.toFloat() / 32))
 					.rotateY(ya)
 					.translate(19.5f, 0f, 0f)
 					.rotateX(xa)
@@ -165,7 +166,8 @@ class GameScene(window: Window) : Scene(window) {
 			GameResources.starTri.get().render()
 		}
 
-		glEnable(GL_CULL_FACE)
+		glEnable(GL_DEPTH_TEST)
+		glCullFace(GL_BACK)
 
 		/* render game */
 		val lightAngle = Vector3f(-0.5f, -2f, -1f).normalize()

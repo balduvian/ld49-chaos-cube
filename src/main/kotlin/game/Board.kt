@@ -5,9 +5,11 @@ import com.balduvian.cnge.graphics.Camera
 import com.balduvian.cnge.graphics.Camera3D
 import com.balduvian.cnge.graphics.Input
 import com.balduvian.cnge.graphics.Timing
+import game.crate.Crate
 import org.joml.Vector3f
 import org.joml.Vector4f
 import org.lwjgl.glfw.GLFW.*
+import org.lwjgl.opengl.GL11.*
 import kotlin.math.pow
 import kotlin.math.round
 import kotlin.random.Random
@@ -193,7 +195,7 @@ class Board(val width: Int, val height: Int) {
 
 	fun getStage(stageNo: Int): Stage {
 		return when (stageNo) {
-			0 -> Stage( 60.0, 2.50, 20.0, 0.25f, false, Color(0x3c6e71), Color(0x284b63), Color(0x183059))
+			0 -> Stage( 60.0, 2.50, 20.0, 0.25f, false, Color(0x010a29), Color(0x000000), Color(0x1a0436))
 			1 -> Stage( 90.0, 2.25, 18.0, 0.30f, false, Color(0xf03a47), Color(0xaf5b5b), Color(0xf87060))
 			2 -> Stage(120.0, 2.00, 16.0, 0.35f, false, Color(0x8db580), Color(0x4cb5ae), Color(0x065143))
 			3 -> Stage(150.0, 1.75, 14.0, 0.40f, true, Color(0xce1483), Color(0x9e1946), Color(0xde0d92))
@@ -331,44 +333,98 @@ class Board(val width: Int, val height: Int) {
 		/* render floor */
 		val random = Random(32432)
 
+		val (r0, g0, b0) = Color(0x2b06d1)
+		val (r1, g1, b1) = Color(0xde00d3)
+
+		val edgeWidth = 0.1f
+
+		glDisable(GL_DEPTH_TEST)
+
 		for (i in 0 until width) {
 			for (j in 0 until height) {
-				val lightness = Util.interp(0.75f, 1.0f, random.nextFloat())
+				GameResources.gridFuzzyShader.get().enable(
+					camera.projView,
+					Camera3D.transform(
+						i - edgeWidth * 2, 0f, j - edgeWidth * 2, 1f + edgeWidth * 4, 1f, 1f + edgeWidth * 4
+					)
+				)
+
+				GameResources.gridFuzzyShader.get().uniformFloat(0, edgeWidth * 4)
+				GameResources.gridFuzzyShader.get().uniformVector4(1, r0, g0, b0, 1f)
+				GameResources.gridFuzzyShader.get().uniformVector4(2, r1, g1, b1, 1f)
+				GameResources.gridFuzzyShader.get().uniformFloat(3, globalTimer.toFloat() * 0.125f)
+				GameResources.plane.get().render()
+			}
+		}
+
+		for (i in 0 until width) {
+			for (j in 0 until height) {
 				val index = xzToIndex(i, j)
 
 				if (level[index] != 0) {
 					/* grid face */
-					GameResources.stage3DShader.get().enable(camera.projView, Camera3D.transform(i.toFloat(), 0f, j.toFloat(), 1f, 1f, 1f))
+					//GameResources.stage3DShader.get().enable(camera.projView, Camera3D.transform(i.toFloat(), 0f, j.toFloat(), 1f, 1f, 1f))
+//
+					//val goal = goals[index]
+					//if (goal != null) {
+					//	val color = Util.colors[goal.type]
+					//	GameResources.stage3DShader.get().uniformVector3(0, color.first, color.second, color.third)
+					//} else {
+					//	GameResources.stage3DShader.get().uniformVector3(0, lightness, lightness, lightness)
+					//}
+//
+					//GameResources.stage3DShader.get().uniformVector3(1, 0.25f, 0.25f, 0.25f)
+					//GameResources.stage3DShader.get().uniformVector3(2, lightAngle.x, lightAngle.y, lightAngle.z)
+//
+					//val impendingCrate = impending[index]
+					//if (impendingCrate == null) {
+					//	GameResources.stage3DShader.get().uniformFloat(3, 0f)
+					//} else {
+					//	GameResources.stage3DShader.get().uniformFloat(3, impendingCrate.timer.along())
+					//}
+//
+					//GameResources.plane.get().render()
+
+					GameResources.gridShader.get().enable(
+						camera.projView,
+						Camera3D.transform(
+							i - edgeWidth / 2f, 0f, j - edgeWidth / 2f, 1f + edgeWidth, 1f, 1f + edgeWidth
+						)
+					)
+
+					GameResources.gridShader.get().uniformFloat(0, edgeWidth)
+					GameResources.gridShader.get().uniformVector4(1, r0, g0, b0, 1f)
+					GameResources.gridShader.get().uniformVector4(2, r1, g1, b1, 1f)
 
 					val goal = goals[index]
 					if (goal != null) {
 						val color = Util.colors[goal.type]
-						GameResources.stage3DShader.get().uniformVector3(0, color.first, color.second, color.third)
+						GameResources.gridShader.get().uniformVector4(3, color.first, color.second, color.third, 1f)
 					} else {
-						GameResources.stage3DShader.get().uniformVector3(0, lightness, lightness, lightness)
+						GameResources.gridShader.get().uniformVector4(3, 0f, 0f, 0f, 0f)
 					}
-
-					GameResources.stage3DShader.get().uniformVector3(1, 0.25f, 0.25f, 0.25f)
-					GameResources.stage3DShader.get().uniformVector3(2, lightAngle.x, lightAngle.y, lightAngle.z)
 
 					val impendingCrate = impending[index]
-					if (impendingCrate == null) {
-						GameResources.stage3DShader.get().uniformFloat(3, 0f)
-					} else {
-						GameResources.stage3DShader.get().uniformFloat(3, impendingCrate.timer.along())
+					if (impendingCrate != null) {
+						GameResources.gridShader.get()
+							.uniformVector4(3, 0f, 0f, 0f, impendingCrate.timer.along() * 0.75f)
 					}
+
+					GameResources.gridShader.get().uniformFloat(4, globalTimer.toFloat() * 0.125f)
 
 					GameResources.plane.get().render()
 
 					/* walls */
-					GameResources.color3DShader.get().enable(camera.projView, Camera3D.transform(i.toFloat(), -3f, j.toFloat(), 1f, 3f, 1f))
-					GameResources.color3DShader.get().uniformVector3(0, 0.75f, 0.75f, 0.75f)
-					GameResources.color3DShader.get().uniformVector3(1, 0.25f, 0.25f, 0.25f)
-					GameResources.color3DShader.get().uniformVector3(2, lightAngle.x, lightAngle.y, lightAngle.z)
-					GameResources.sleeve.get().render()
+					//GameResources.color3DShader.get().enable(camera.projView, Camera3D.transform(i.toFloat(), -3f, j.toFloat(), 1f, 3f, 1f))
+					//GameResources.color3DShader.get().uniformVector3(0, 0.75f, 0.75f, 0.75f)
+					//GameResources.color3DShader.get().uniformVector3(1, 0.25f, 0.25f, 0.25f)
+					//GameResources.color3DShader.get().uniformVector3(2, lightAngle.x, lightAngle.y, lightAngle.z)
+					//GameResources.sleeve.get().render()
 				}
 			}
 		}
+
+		glEnable(GL_DEPTH_TEST)
 
 		/* render crates */
 		iter(impending) { crate, x, z, _ ->

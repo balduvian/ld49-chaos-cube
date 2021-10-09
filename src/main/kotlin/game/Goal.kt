@@ -3,8 +3,8 @@ package game
 import com.balduvian.cnge.core.Timer
 import com.balduvian.cnge.graphics.Camera3D
 import com.balduvian.cnge.graphics.Timing
+import game.crate.Crate
 import org.joml.Math.cos
-import org.joml.Math.sin
 import kotlin.math.PI
 
 class Goal(val type: Int) {

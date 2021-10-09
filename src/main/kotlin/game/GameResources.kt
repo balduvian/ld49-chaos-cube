@@ -32,6 +32,13 @@ object GameResources {
 		"ambient",
 		"lightAngle"
 	)
+	val smoothColor3DShader = ShaderResource(
+		"/shaders/smoothColor3D/vert.glsl",
+		"/shaders/smoothColor3D/frag.glsl",
+		"light",
+		"ambient",
+		"lightAngle"
+	)
 	val stage3DShader = ShaderResource(
 		"/shaders/stage3D/vert.glsl",
 		"/shaders/stage3D/frag.glsl",
@@ -95,6 +102,23 @@ object GameResources {
 		"index",
 		"time",
 		"color",
+	)
+	val gridShader = ShaderResource(
+		"/shaders/grid/vert.glsl",
+		"/shaders/grid/frag.glsl",
+		"width",
+		"edgeColor0",
+		"edgeColor1",
+		"centerColor",
+		"time",
+	)
+	val gridFuzzyShader = ShaderResource(
+		"/shaders/gridFuzzy/vert.glsl",
+		"/shaders/gridFuzzy/frag.glsl",
+		"width",
+		"edgeColor0",
+		"edgeColor1",
+		"time",
 	)
 	val rect = VAOResource(
 		GL_TRIANGLES,
@@ -318,7 +342,7 @@ object GameResources {
 			)
 		)
 	}
-	val sphere = Sphere.createSphere(32)
+	val sphere = Shapes.createSphere(32)
 	val dynTri = VAOResource(
 		GL_TRIANGLES,
 		intArrayOf(0, 1, 2),
@@ -333,6 +357,7 @@ object GameResources {
 			0f, cos(4 * PI.toFloat() / 3), sin(4 * PI.toFloat() / 3)
 		)))
 	)
+	val roundedCube = Shapes.createRoundedCube()
 	val fontTiles = TileTextureResource(
 		"/textures/font.png",
 		TextureParams().filter(GL_NEAREST).wrap(GL_CLAMP_TO_BORDER),
